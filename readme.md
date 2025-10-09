@@ -1,10 +1,10 @@
-<!-- Auction Platform Backend -->
+ **Auction Platform Backend** 
 This is a robust backend API for an Auction Platform built using Node.js, Express, and MongoDB. It supports event-driven car auctions with features like user authentication, bidding, and email notifications.
 
-<!-- Key Features -->
+** Key Features** 
 User Management: Users with roles (admin, dealer) can register and authenticate securely.
 
-<!-- Role Details: -->
+**Role Details:**
 
 - An Admin user is pre-set with name Admin and password. Admins can create cars and auctions using an authentication token.
 
@@ -18,7 +18,7 @@ User Management: Users with roles (admin, dealer) can register and authenticate 
 
 - Input Validation: Input fields like email, password, role, and event dates are validated using express-validator.
 
-<!-- Security Enhancements: -->
+ **Security Enhancements:**
 
 - Helmet for secure HTTP headers.
 
