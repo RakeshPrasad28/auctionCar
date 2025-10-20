@@ -1,9 +1,11 @@
 import express from "express";
-import { createCar } from "../controllers/car.controller.js";
-import auth from "../middlewares/auth.js";
+import { createCar, getAllCars } from "../controllers/car.controller.js";
+import { adminAuth } from "../middlewares/auth.js";
+import { upload } from "../middlewares/multer.js";
 
 const router = express.Router();
 
-router.post("/create-car",auth, createCar);
+router.post("/create-car", adminAuth, upload.single("image"), createCar);
+router.get("/getAllCars", adminAuth, getAllCars);
 
 export default router;

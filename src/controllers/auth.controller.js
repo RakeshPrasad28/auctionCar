@@ -4,18 +4,6 @@ import bcrypt from "bcrypt";
 import TryCatch from "../utils/TryCatch.js";
 import { validationResult } from "express-validator";
 
-export const registerAdmin = TryCatch(async (req, res) => {
-  const { name, email, password, role } = req.body;
-  const hashedPass = await bcrypt.hash(password, 10);
-  const user = User.create({
-    name,
-    email,
-    role,
-    password: hashedPass,
-  });
-  return res.status(200).json({ message: "register", user });
-});
-
 export const getToken = TryCatch(async (req, res) => {
   const { name, password, role } = req.body;
   if (role !== "admin") {
@@ -75,25 +63,50 @@ export const registerDealer = TryCatch(async (req, res) => {
   });
 });
 
-export const loginDealer = TryCatch(async (req, res) => {
+export const loginUser = TryCatch(async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
-  const { email, password } = req.body;
+  const { email, password, role } = req.body;
 
-  const dealer = await User.findOne({ email, role: "dealer" });
-  if (!dealer) {
-    return res.status(404).json({ message: "Dealer not found" });
+  const user = await User.findOne({ email, role });
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
+  }
+  let isMatch = false;
+  if (role === "admin") {
+    isMatch = password === user.password;
+  } else {
+    isMatch = await bcrypt.compare(password, user.password);
   }
 
-  const isMatch = await bcrypt.compare(password, dealer.password);
   if (!isMatch) {
-    return res.status(400).json({ message: "Invalid credentials" });
+    return res.status(401).json({ message: "Invalid credentials" });
   }
 
-  return res.status(200).json({
-    message: "Login successful",
-    dealer: { name: dealer.name, email: dealer.email, role: dealer.role },
+  const token = generateToken({
+    id: user._id,
+    name: user.name,
+    role: user.role,
+    email: user.email,
   });
+
+  const { password: pwd, ...userData } = user.toObject();
+  res.cookie("token", token, {
+    httpOnly: true,
+    secure: false,
+    sameSite: "lax",
+    path: "/",
+    maxAge: 24 * 60 * 60 * 1000,
+  });
+  res.status(200).json({
+    message: "Login successful",
+    user: userData,
+    token,
+  });
+});
+
+export const authMe = TryCatch(async (req, res) => {
+  res.json(req.user);
 });

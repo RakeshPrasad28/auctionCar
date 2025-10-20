@@ -1,7 +1,7 @@
  **Auction Platform Backend** 
-This is a robust backend API for an Auction Platform built using Node.js, Express, and MongoDB. It supports event-driven car auctions with features like user authentication, bidding, and email notifications.
+This is a robust backend API for an Auction Platform built using Node.js, Express, and MongoDB. It supports event-driven car auctions with features like user authentication, real time bidding, and email notifications.
 
-** Key Features** 
+**Key Features** 
 User Management: Users with roles (admin, dealer) can register and authenticate securely.
 
 **Role Details:**
@@ -23,24 +23,27 @@ User Management: Users with roles (admin, dealer) can register and authenticate 
 - Helmet for secure HTTP headers.
 
 - Rate limiting on critical endpoints to prevent abuse.
+- Used httpOnly Cookies for XSS Attacks.
 
 
 Testing: Comprehensive unit and integration tests written with Jest and node-mocks-http, covering models, utilities, and controllers.
 
 <!-- Technologies Used -->
-Node.js, Express.js
+- Node.js, Express.js
 
-MongoDB with Mongoose ODM
+- MongoDB with Mongoose ODM
 
-JSON Web Tokens (JWT) for authentication
+- JSON Web Tokens (JWT) for authentication
 
-Nodemailer for email services
+- Nodemailer for email services
 
-Express Validator for input validation
+- Express Validator for input validation
+- Socket.io for real time bidding
 
-Helmet, express-rate-limit, express-mongo-sanitize for security hardening
+- Helmet, express-rate-limit, express-mongo-sanitize for security hardening
+  multer and cloudinary for uploading image files.
 
-Jest and node-mocks-http for testing
+- Jest and node-mocks-http for testing
 
 <!-- Project Structure Highlights -->
 models/ - Mongoose schemas for Users, Cars, Auctions, Bids
@@ -54,6 +57,8 @@ utils/ - Helper functions including JWT token generation & email sending
 middlewares/ - Authentication and error handling middlewares
 
 tests/ - Unit and integration tests with mocking and validation
+
+config/ - some additional configurations like connect DataBase and cloudinary setup.
 
 <!-- Getting Started -->
 Clone the repo

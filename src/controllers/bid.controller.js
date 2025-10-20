@@ -1,3 +1,4 @@
+import { io } from "../config/socket.js";
 import Auction from "../models/auction.model.js";
 import Bid from "../models/bid.model.js";
 import User from "../models/user.model.js";
@@ -36,5 +37,27 @@ export const placeBid = TryCatch(async (req, res) => {
     auction: auction._id,
   });
   await newBid.save();
+  
+  io.to(auctionId.toString()).emit("bidUpdated", {
+    auctionId: auctionId.toString(),
+    bidAmount: newBid.bidAmount,
+    dealerId: dealerId,
+    timePlaced: newBid.timePlaced,
+  });
   res.status(201).json(newBid);
+});
+
+export const getBid = TryCatch(async (req, res) => {
+  const { auctionId } = req.body;
+  if (!auctionId) {
+    return res.status(400).json({ message: "auctionId is required" });
+  }
+
+  const bid = await Bid.findOne({ auction: auctionId }).sort({ createdAt: -1 });
+
+  if (!bid) {
+    return res.status(404).json(null);
+  }
+
+  return res.status(200).json(bid);
 });
